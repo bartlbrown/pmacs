@@ -24,7 +24,7 @@ conda create --name pmacs --file conda_environment.yml
 ```
 conda activate pmacs
 ```
-5. Make sure you can run pmacs succesfully
+5. Make sure you can run pmacs successfully
 ```
 cd pmacs/pmacs
 python __main__.py
