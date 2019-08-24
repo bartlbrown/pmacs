@@ -29,3 +29,7 @@ conda activate pmacs
 cd pmacs/pmacs
 python __main__.py
 ```
+
+## License
+
+pmacs is published under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
