@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: pmacs
+Version: 0.0.1
+Summary: Python editing MACroS
+Home-page: https://github.com/bartlbrown/pmacs
+Author: Barton L. Brown
+Author-email: bartonlbrown@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 2.7
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: ==2.7
+Description-Content-Type: text/markdown

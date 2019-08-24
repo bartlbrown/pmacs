@@ -1,0 +1,13 @@
+README.md
+setup.py
+pmacs/__init__.py
+pmacs/__main__.py
+pmacs/buffer.py
+pmacs/frame.py
+pmacs/minibuffer.py
+pmacs/stack.py
+pmacs.egg-info/PKG-INFO
+pmacs.egg-info/SOURCES.txt
+pmacs.egg-info/dependency_links.txt
+pmacs.egg-info/requires.txt
+pmacs.egg-info/top_level.txt
