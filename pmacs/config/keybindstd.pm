@@ -1,11 +1,8 @@
 # Window Functions
 self.bind('Ctrl+X, Ctrl+C', 'std', self.exit)
 
-self.bind('Ctrl+P', 'bufferstd', self.select_all)
-
 # MiniBuffer Functions
 #self.bind('Ctrl+X, Ctrl+F', 'bufferstd', self.minibuffer_open_file_hook)
-
 
 # Stack Functions
 self.bind('Ctrl+X, O', 'bufferstd', self.focus_next_stack)
@@ -30,5 +27,15 @@ self.bind('Ctrl+A', 'std', self.move_cursor_line_start)
 self.bind('Ctrl+Shift+E', 'std', self.move_cursor_line_end_mark)
 self.bind('Ctrl+Shift+A', 'std', self.move_cursor_line_start_mark)
 
+self.bind('Shift+Left', 'std', self.move_cursor_char_left_mark)
+self.bind('Shift+Right', 'std', self.move_cursor_char_right_mark)
+self.bind('Shift+Up', 'std', self.move_cursor_line_up_mark)
+self.bind('Shift+Down', 'std', self.move_cursor_line_down_mark)
+
+self.bind('Shift+Ctrl+Left', 'std', self.move_cursor_word_left_mark)
+self.bind('Shift+Ctrl+Right', 'std', self.move_cursor_word_right_mark)
+self.bind('Shift+Ctrl+Up', 'std', self.move_cursor_block_up_mark)
+self.bind('Shift+Ctrl+Down', 'std', self.move_cursor_block_down_mark)
+    
 # Mark Mode
 self.bind('Ctrl+Space', 'std', self.toggle_mark_mode)

@@ -4,6 +4,7 @@ import os
 import sys
 import importlib
 import inspect
+import re
 
 
 class Frame(QtGui.QWidget):
@@ -40,6 +41,7 @@ class Frame(QtGui.QWidget):
         self.primary_mode_dict = {}            # list of available modes with init functions
         self.settings = {}
 
+        self.special_chars = re.compile('[@_!#$%^&*()<>?/\|}{~:\[\]\\\,.\'\"+-=\` ]')
 
         # load core pmacs init
         self.load_core_init_file()
@@ -67,9 +69,16 @@ class Frame(QtGui.QWidget):
 
         elif event.type() == QtCore.QEvent.ShortcutOverride:
             return True
-
-        return super(Frame, self).eventFilter(sourceObj, event)
-
+        elif event.type() == QtCore.QEvent.KeyPress:
+            char = str(event.text())
+            key = event.key()
+            if char.isalnum() or self.special_chars.search(char):
+                self.current_widget.cursor.insert(char)
+            else:
+                return self.current_widget.cursor.default_event_handler(sourceObj, event)
+            return True
+        else:
+            return super(Frame, self).eventFilter(sourceObj, event)
     
     # load module from py file in module directory
     def require(self, module_name, obj=None):
