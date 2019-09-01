@@ -10,6 +10,12 @@ def toggle_mark_mode(self):
     if not self.current_widget.mark_mode:
         self.current_widget.unset_mark_mode()
 
+def backspace(self):
+    self.current_widget.backspace()
+
+def enter(self):
+    self.current_widget.enter()
+    
 # Cursor Movement
 def move_cursor_char_right(self):
     if self.current_widget.mark_mode:

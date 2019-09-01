@@ -3,6 +3,7 @@ build
 
 # backup files
 *.*~
+*#*
 
 # python
 *.pyc

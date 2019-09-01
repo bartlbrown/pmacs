@@ -13,11 +13,13 @@ class Buffer(QtGui.QTextEdit, QtCore.QObject):
         self.actions = {}
         self.std_modes = std_modes
         self.primary_mode = primary_mode
+
+        self.cursor = Cursor(self)
         self.mark_mode = False
-        self.insertPlainText(text)
+        self.insertPlainText(text+" ")
+        self.moveCursor(QtGui.QTextCursor.Left)
         # stop markmode if the text changed
         self.textChanged.connect(self.onTextChanged)
-        self.cursor = Cursor(self)
                                 
     @QtCore.pyqtSlot()
     def onTextChanged(self):
@@ -26,7 +28,6 @@ class Buffer(QtGui.QTextEdit, QtCore.QObject):
     def unset_mark_mode(self):
         self.mark_mode = False
         self.cursor.clear()
-
         
     def copy(self):
         newBuffer = Buffer(self.parent, self.id, self.name, self.filepath, "", self.std_modes, self.primary_mode)
@@ -36,3 +37,12 @@ class Buffer(QtGui.QTextEdit, QtCore.QObject):
 
     def moveCursor(self, MoveOperation, MoveMode=QtGui.QTextCursor.MoveAnchor):
         self.cursor.moveCursor(MoveOperation, MoveMode)
+
+    def insert(self, char):
+        self.cursor.insert(char)
+        
+    def backspace(self):
+        self.cursor.backspace()
+
+    def enter(self):
+        self.cursor.enter()

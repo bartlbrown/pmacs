@@ -1,5 +1,6 @@
 from PyQt4 import QtGui, QtCore
 from buffer import Buffer
+from cursor import Cursor
 
 class MiniBuffer(QtGui.QLineEdit):
     def __init__(self, parent, filepath, text, std_modes, primary_mode=None):
@@ -17,6 +18,8 @@ class MiniBuffer(QtGui.QLineEdit):
         # child objects
         self.vlayout = QtGui.QVBoxLayout() # layout holds minibuffer and infobuffer
         self.infobuffer = Buffer(self)
+
+        # insert starting text
         self.textCursor().insertText(text)
 
         # initializers
@@ -25,9 +28,7 @@ class MiniBuffer(QtGui.QLineEdit):
         self.init_layout()
 
         # unset mark mode if text changes
-        self.textChanged.connect(self.on_text_changed)
-        # connect return signal to do nothing
-        self.returnPressed.connect(self.do_nothing)
+        self.textChanged.connect(self.onTextChanged)
         
     def init_infobuffer(self):
         self.infobuffer.id = 0
@@ -55,12 +56,6 @@ class MiniBuffer(QtGui.QLineEdit):
         self.infobuffer.hide()
         self.vlayout.addWidget(self)
 
-    def unset_mark_mode(self):
-        self.mark_mode = False
-        cursor = self.textCursor()
-        cursor.setPosition(cursor.position())
-        self.setTextCursor(cursor)
-
     # Compatibility methods
     def textCursor(self):
         return self
@@ -78,12 +73,19 @@ class MiniBuffer(QtGui.QLineEdit):
         pass
 
     def moveCursor(self, MoveOperation, MoveMode=QtGui.QTextCursor.MoveAnchor):
-        mark = self.mark_mode or MoveMode == QtGui.QTextCursor.KeepAnchor
+        mark = (MoveMode == QtGui.QTextCursor.KeepAnchor)
         self.move_op_dict[MoveOperation](mark)
 
     @QtCore.pyqtSlot()
-    def on_text_changed(self):
+    def onTextChanged(self):
         self.unset_mark_mode()
 
-    def do_nothing(self):
+    def unset_mark_mode(self):
+        self.mark_mode = False
+        self.deselect()
+
+    def backspace(self):
+        super(MiniBuffer, self).backspace()
+
+    def enter(self):
         pass

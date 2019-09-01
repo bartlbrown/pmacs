@@ -39,3 +39,15 @@ self.bind('Shift+Ctrl+Down', 'std', self.move_cursor_block_down_mark)
     
 # Mark Mode
 self.bind('Ctrl+Space', 'std', self.toggle_mark_mode)
+
+# Backspace
+self.bind('Backspace', 'std', self.backspace)
+
+# Enter
+self.bind('Return', 'std', self.enter)
+
+# Macros
+self.bind('Ctrl+X, (', 'std', self.macro_record)
+self.bind('Ctrl+X, )', 'std', self.macro_finish)
+self.bind('Ctrl+X, E', 'std', self.macro_execute)
+

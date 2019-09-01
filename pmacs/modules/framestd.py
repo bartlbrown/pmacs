@@ -60,19 +60,24 @@ def bind(self, keystr, mode, function, scope=QtCore.Qt.WidgetShortcut):
     else:
         self.shortcut_dict[mode][keystr] = function
 
+
+def keystr_run(self, keystr):
+    modes = copy.copy(self.current_widget.std_modes)
+    modes.append(self.current_widget.primary_mode)
+    modes.reverse()
+    for mode in modes:
+        if mode:
+            if self.shortcut_dict.get(mode, False) and self.shortcut_dict[mode].get(keystr, False):
+                print mode + " " + keystr
+                self.shortcut_dict[mode][keystr]()
+                self.last_cmd = self.shortcut_dict[mode][keystr]
+
+        
 def keystr_closure(self, keystr):
     def keystr_function():
         if self.macro_flag:
-            self.macro.append(keystr)
-        modes = copy.copy(self.current_widget.std_modes)
-        modes.append(self.current_widget.primary_mode)
-        modes.reverse()
-        for mode in modes:
-            if mode:
-                if self.shortcut_dict.get(mode, False) and self.shortcut_dict[mode].get(keystr, False):
-                    print mode + " " + keystr
-                    self.shortcut_dict[mode][keystr]()
-                    break
+            self.macro.append(keystr) 
+        self.keystr_run(keystr)
     return keystr_function
 
 

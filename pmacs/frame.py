@@ -32,6 +32,7 @@ class Frame(QtGui.QWidget):
         self.shortcut_dict = {}                       # contains functions mapped to keystr. Used for keybinding
         self.macro = []                                   # record commands for the current macro
         self.macro_flag = False
+        self.last_cmd = None
         self.stacks = []                                   # record all stacks
         self.widgets = []                                # record ALL widgets
         self.minibuffer = None
@@ -55,7 +56,6 @@ class Frame(QtGui.QWidget):
         self.init_minibuffer()
         self.init_layout() # initialize layout of windows
 
-        
     # Event Filter used for all objects to capture keypresses
     def eventFilter(self, sourceObj, event):
         if event.type() == QtCore.QEvent.FocusIn:
@@ -70,16 +70,44 @@ class Frame(QtGui.QWidget):
         elif event.type() == QtCore.QEvent.ShortcutOverride:
             return True
         elif event.type() == QtCore.QEvent.KeyPress:
+            if self.macro_flag:
+                new_event = QtGui.QKeyEvent(event)
+                self.macro.append(new_event)
             char = str(event.text())
+
+            if char == 'e' and self.last_cmd == self.macro_execute:
+                print "macro"
+                self.macro_execute()
+                self.last_cmd = self.macro_execute
+                return True
+            
             key = event.key()
             if char.isalnum() or self.special_chars.search(char):
-                self.current_widget.cursor.insert(char)
-            else:
-                return self.current_widget.cursor.default_event_handler(sourceObj, event)
+                self.current_widget.insert(char)
+                return True
+
             return True
         else:
+            #return True
             return super(Frame, self).eventFilter(sourceObj, event)
-    
+
+    def macro_record(self):
+        self.macro = []
+        self.macro_flag = True
+        print "Recording Macro"
+
+    def macro_finish(self):
+        self.macro_flag = False
+        self.macro = self.macro[:-1]
+        print "Finished Recording"
+
+    def macro_execute(self):
+        for action in self.macro:
+            if type(action) == str:
+                self.keystr_run(action)
+            else:
+                self.eventFilter(self.current_widget, action)
+
     # load module from py file in module directory
     def require(self, module_name, obj=None):
         module_name = os.path.splitext(os.path.split(str(self.MODULEDIR+module_name))[1])[0]
@@ -106,10 +134,9 @@ class Frame(QtGui.QWidget):
     # executes configuration commands from init file
     def load_init_file(self):
         self.eval_file(self.PMACSDIR + self.INITFILE + ".pm")
-
         
     # Eval Functions
-
+    
     def eval_file(self, filename):
         try:
             lines = []
@@ -122,17 +149,15 @@ class Frame(QtGui.QWidget):
         except IOError:
             self.log_message(filename + " does not exist.")
 
-
     def eval_lines(self, lines):
         for line in lines:
             self.eval_line(line)
 
-
     def eval_line(self, line):
-        #try:
-        exec (str(line), globals(), locals())
-        #except:
-            #self.log_message("Eval Failed: " + line)
+        try:
+            exec (str(line), globals(), locals())
+        except:
+            self.log_message("Eval Failed: " + line)
             
     # temp error logging function
     def log_message(self, message):

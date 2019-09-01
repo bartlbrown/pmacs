@@ -1,4 +1,5 @@
 from PyQt4 import (QtGui, QtCore)
+from minibuffer import MiniBuffer
 import glob
 import os
 
@@ -8,8 +9,10 @@ def ON_LOAD(self):
     self.opening_file= False
     
 def INIT(self):
-    self.minibuffer.returnPressed.disconnect()
-    self.minibuffer.returnPressed.connect(self.minibuffer_open_or_save_file)
+    def enter(self):
+        self.parent.minibuffer_open_or_save_file()
+
+    MiniBuffer.enter = enter
     self.bind('Tab, Tab', 'minibufferfile', self.minibuffer_file_autocomplete)
 
 def minibuffer_open_or_save_file(self):
