@@ -135,7 +135,6 @@ def new_buffer(self, name, filepath, text, std_modes, primary_mode=None):
         self.apply_primary_mode(newBuf)
         stack.addWidget(newBuf)
         self.widgets.append(newBuf)
-        newBuf.setCursorWidth(0)
 
 
     self.next_buffer_id = self.next_buffer_id + 1
@@ -154,7 +153,7 @@ def init_stacks(self):
 def copy_stack(self, stack):
     newStack = Stack(self)
     for i in range(stack.count()):
-        bufCopy = stack.widget(i).copy()
+        bufCopy = stack.widget(i).copy(newStack)
         bufCopy.installEventFilter(self)
         self.apply_std_modes(bufCopy)
         self.apply_primary_mode(bufCopy)
@@ -166,7 +165,7 @@ def copy_stack(self, stack):
 # Minibuffer Functions            
 
 def init_minibuffer(self):
-    self.minibuffer = self.new_minibuffer("", "~/", self.settings['std_minibuffer_modes'])
+    self.minibuffer = self.new_minibuffer("", "", self.settings['std_minibuffer_modes'])
     self.widgets.append(self.minibuffer)
     
 def new_minibuffer(self, filepath, text, std_modes, primary_mode=""):

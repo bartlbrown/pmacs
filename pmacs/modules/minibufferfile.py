@@ -14,7 +14,18 @@ def INIT(self):
 
     MiniBuffer.enter = enter
     self.bind('Tab, Tab', 'minibufferfile', self.minibuffer_file_autocomplete)
+    filepath = self.current_widget.filepath # happens before focusing on minibuffer
+    if filepath:
+        self.minibuffer.filepath = filepath
+    else:
+        self.minibuffer.filepath = "~/"
+    self.minibuffer_display_filepath()
 
+def minibuffer_display_filepath(self):
+    self.minibuffer.clear()
+    self.minibuffer.setText(self.minibuffer.filepath)
+    self.minibuffer.cursor.moveCursor(QtGui.QTextCursor.EndOfLine)
+    
 def minibuffer_open_or_save_file(self):
     if self.opening_file:
         self.open_file_in_new_buffer()
@@ -28,11 +39,12 @@ def minibuffer_open_file(self):
     self.focus_minibuffer()
     
 def open_file_in_new_buffer(self):
-    id = self.new_buffer("", self.minibuffer.text(), "", self.settings['std_buffer_modes'])
+    id = self.new_buffer("", self.minibuffer.toPlainText(), "", self.settings['std_buffer_modes'])
     self.current_stack.setCurrentWidget(self.get_buffer_with_id(id))
     self.unfocus_minibuffer()
-    text = self.open_file(str(self.minibuffer.text()))
+    text = self.open_file(str(self.minibuffer.toPlainText()))
     self.current_widget.setPlainText(text)
+    self.current_widget.moveCursor(QtGui.QTextCursor.Start)
 
 def save_current_buffer_to_file(self):
     buffer = self.current_widget
@@ -49,12 +61,12 @@ def save_current_buffer_to_file(self):
 def saveas_current_buffer_to_file(self):
     buffer = self.current_widget
     if issubclass(type(buffer), QtGui.QTextEdit):
-        buffer.filepath = str(self.minibuffer.text())
+        buffer.filepath = str(self.minibuffer.toPlainText())
         self.save_current_buffer_to_file()
             
 def minibuffer_file_autocomplete(self):
     filepath = self.minibuffer.filepath
-    text = self.minibuffer.text()
+    text = self.minibuffer.toPlainText()
     text = os.path.expanduser(str(text))
     options = glob.glob(str(str(text)+'*'))
     if len(options) == 1:
@@ -71,4 +83,6 @@ def minibuffer_file_autocomplete(self):
         self.minibuffer.infobuffer.setFixedHeight(self.minibuffer.infobuffer.document().size().height())
     else:
         self.minibuffer.infobuffer.hide()
+    self.minibuffer.clear()
     self.minibuffer.setText(text)
+    self.minibuffer.cursor.moveCursor(QtGui.QTextCursor.EndOfLine)

@@ -17,6 +17,14 @@ class Cursor:
         self.highlighter.format.setBackground(highlightColor)
 
         self.indicate_cursor()
+
+    def copy(self, parent):
+        cursor = Cursor(parent)
+        cursor.highlighter.cursor.setPosition(self.highlighter.cursor.anchor())
+        cursor.highlighter.cursor.setPosition(self.highlighter.cursor.position(), QtGui.QTextCursor.KeepAnchor)
+        cursor.cursor.cursor.setPosition(self.cursor.cursor.anchor())
+        cursor.cursor.cursor.setPosition(self.cursor.cursor.position(), QtGui.QTextCursor.KeepAnchor)
+        return cursor
         
     def set_textCursor_at_highlighter(self):
         self.parent.setTextCursor(self.highlighter.cursor)
